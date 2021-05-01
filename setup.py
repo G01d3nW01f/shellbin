@@ -7,6 +7,6 @@ if os.getuid() != 0:
   sys.exit()
  
 os.system("chmod +x shellbin.py")
-os.system("cp shellbin /usr/local/bin/shellbin")
+os.system("cp shellbin.py /usr/local/bin/shellbin")
 
 print("[+]SetUp Done.......")
