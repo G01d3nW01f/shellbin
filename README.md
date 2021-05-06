@@ -19,6 +19,11 @@ SetUp:
      if root user      :  python3 setup.py
      if not a root user:  sudo python3 setup.py
 
+Require:
+
+     python3.x
+     mingw 
+
 
 Auto generate as "shell.c" "shell.cpp" and "shell.elf" "shell.exe"
 So becareful to current files name on working directory 
