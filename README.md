@@ -1,8 +1,6 @@
 # shellbin
 Auto Reverse Shell Binary Generator
 
-Auto generate reverse shell binary
-
 if you can't use msfvenom, maybe this script is so usefuly.
 
 they can generate as elf or exe format with out msfvenom
