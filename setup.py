@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+import sys
 
 if os.getuid() != 0:
   print("[!]YouMustExecute as Root!!!!!!!!!")
